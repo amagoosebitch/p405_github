@@ -1,0 +1,11 @@
+.vscode/
+.venv/
+media/
+local_settings.py
+__pycache__
+*.pyc
+.env
+.idea
+src/db.sqlite3
+kek.py
+**/.pytest_cache

@@ -29,8 +29,9 @@ from mmseg.datasets import build_dataset
 from mmseg.models import build_segmentor
 from mmseg.apis import train_segmentor
 
-PATH_TO_SAVE = ''
-LOG_FILE = ''
+PATH_TO_SAVE = 'data/model.txt'
+LOG_FILE = 'data/logs.txt'
+CONFIG_FILE = "pspnet_r50-d8_4xb2-40k_cityscapes-512x1024.py"
 data_root = '../train'
 img_dir = ''
 ann_dir = ''
@@ -58,7 +59,8 @@ class StanfordBackgroundDatasett(CustomDataset):
                      split=split, **kwargs)
     assert osp.exists(self.img_dir) and self.split is not None
 
-cfg = Config.fromfile('configs/pspnet/pspnet_r50-d8_512x1024_40k_cityscapes.py')
+
+cfg = Config.fromfile(f'configs/pspnet/{CONFIG_FILE}')
 cfg.norm_cfg = dict(type='BN', requires_grad=True)
 cfg.model.backbone.norm_cfg = cfg.norm_cfg
 cfg.model.decode_head.norm_cfg = cfg.norm_cfg
@@ -70,7 +72,7 @@ cfg.dataset_type = 'StanfordBackgroundDatasett'
 cfg.data_root = data_root
 
 cfg.data.samples_per_gpu = 8
-cfg.data.workers_per_gpu=8
+cfg.data.workers_per_gpu = 8
 
 cfg.img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
