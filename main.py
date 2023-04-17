@@ -15,6 +15,7 @@
 
 !mkdir checkpoints
 !wget https://download.openmmlab.com/mmsegmentation/v0.5/pspnet/pspnet_r50-d8_512x1024_40k_cityscapes/pspnet_r50-d8_512x1024_40k_cityscapes_20200605_003338-2966598c.pth -P checkpoints
+!pip install -q --upgrade wandb
 """
 import torch, torchvision
 import sys
@@ -28,13 +29,17 @@ from mmseg.utils import get_device
 from mmseg.datasets import build_dataset
 from mmseg.models import build_segmentor
 from mmseg.apis import train_segmentor
+import wandb
 
+wandb.login('7f93497aa1e6aa624e90ca29408b7d959d56f920')
 PATH_TO_SAVE = 'data/model.txt'
 LOG_FILE = 'data/logs.txt'
 CONFIG_FILE = "pspnet_r50-d8_4xb2-40k_cityscapes-512x1024.py"
 data_root = '../train'
 img_dir = ''
 ann_dir = ''
+
+wandb.login()
 
 classes = ('road', 'notroad')
 palette = [[255, 255, 255], [0, 0, 0]]
@@ -132,10 +137,17 @@ cfg.load_from = 'checkpoints/pspnet_r50-d8_512x1024_40k_cityscapes_20200605_0033
 cfg.work_dir = './work_dirs/tutorial'
 
 cfg.runner.max_iters = 200
-cfg.log_config.interval = 10
 cfg.evaluation.interval = 200
+cfg.evaluation.save_best = 'mIoU'
 cfg.checkpoint_config.interval = 200
-
+cfg.log_config = dict(  # config to register logger hook
+    interval=50,  # Interval to print the log
+    hooks=[
+        dict(type='MMSegWandbHook', by_epoch=False, # The Wandb logger is also supported, It requires `wandb` to be installed.
+             init_kwargs={'entity': "OpenMMLab", # The entity used to log on Wandb
+                          'project': "MMSeg"
+                         }), # Check https://docs.wandb.ai/ref/python/init for more init arguments.
+    ])
 
 cfg.seed = 0
 set_random_seed(0, deterministic=False)
