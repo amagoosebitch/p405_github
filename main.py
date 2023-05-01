@@ -9,7 +9,8 @@
 
 !mim install mmcv-full==1.6.0
 !rm -rf mmsegmentation
-!git clone https://github.com/open-mmlab/mmsegmentation.git
+!git clone --branch v0.29.0 https://github.com/open-mmlab/mmsegmentation.git
+
 %cd mmsegmentation
 !pip install -e .
 
@@ -34,7 +35,7 @@ import wandb
 wandb.login('7f93497aa1e6aa624e90ca29408b7d959d56f920')
 PATH_TO_SAVE = 'data/model.txt'
 LOG_FILE = 'data/logs.txt'
-CONFIG_FILE = "pspnet_r50-d8_4xb2-40k_cityscapes-512x1024.py"
+CONFIG_FILE = "pspnet_r50-d8_512x1024_40k_cityscapes.py"
 data_root = '../train'
 img_dir = ''
 ann_dir = ''
@@ -65,7 +66,7 @@ class StanfordBackgroundDatasett(CustomDataset):
     assert osp.exists(self.img_dir) and self.split is not None
 
 
-cfg = Config.fromfile(f'configs/pspnet/{CONFIG_FILE}')
+cfg = Config.fromfile(f'{CONFIG_FILE}')
 cfg.norm_cfg = dict(type='BN', requires_grad=True)
 cfg.model.backbone.norm_cfg = cfg.norm_cfg
 cfg.model.decode_head.norm_cfg = cfg.norm_cfg
