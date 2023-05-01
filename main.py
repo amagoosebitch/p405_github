@@ -35,7 +35,7 @@ import wandb
 wandb.login('7f93497aa1e6aa624e90ca29408b7d959d56f920')
 PATH_TO_SAVE = 'data/model.txt'
 LOG_FILE = 'data/logs.txt'
-CONFIG_FILE = "pspnet_r50-d8_512x1024_40k_cityscapes.py"
+CONFIG_FILE = "configs/pspnet/pspnet_r50-d8_512x1024_40k_cityscapes.py"
 data_root = '../train'
 img_dir = ''
 ann_dir = ''
